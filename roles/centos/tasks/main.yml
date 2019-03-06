@@ -1,25 +1,29 @@
 ---
-- name: Creates {{ yum_repos_d_backup_dir }} directory
-  file:
-    path: "{{ yum_repos_d_backup_dir }}/"
-    state: directory
+- name: install the yum-plugin-priorities package
+  yum:
+    name: yum-plugin-priorities
+    state: present
 
-# back up /etc/yum.repos.d
-- name: Copy /etc/yum.repos.d directory
-  copy:
-    src: "/etc/yum.repos.d/"
-    dest: "{{ yum_repos_d_backup_dir }}/"
+- name: Check presence of fastestmirror.conf
+  stat:
+    path: /etc/yum/pluginconf.d/fastestmirror.conf
+  register: fastestmirror
 
-- name: Remove files in /etc/yum.repos.d
-  find:
-    paths: "/etc/yum.repos.d"
-    patterns: "*.repo"
-  register: files_to_delete
+- name: Enable yum priorities.
+  lineinfile:
+    dest: /etc/yum/pluginconf.d/priorities.conf
+    regexp: "^enabled=.*"
+    line: "enabled=0"
+    state: present
 
-- file:
-    path: "{{ item.path }}"
-    state: absent
-  with_items: "{{ files_to_delete.files }}"
+# fastestmirror plugin actually slows down Ansible deployments
+- name: Disable fastestmirror plugin
+  lineinfile:
+    dest: /etc/yum/pluginconf.d/fastestmirror.conf
+    regexp: "^enabled=.*"
+    line: "enabled=0"
+    state: present
+  when: fastestmirror.stat.exists
 
 # add nexus.repo
 - name: add nexus.repo
@@ -33,5 +37,5 @@
     insertafter: '^\[main\]'
     state: present
   with_items:
-   - "retries=5"
-   - "timeout=900"
+    - "retries=5"
+    - "timeout=900"

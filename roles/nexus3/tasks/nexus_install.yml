@@ -78,6 +78,17 @@
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
 
+# The extracted directory structure: "{{nexus_installation_dir}}/sonatype-work/nexus3"
+- name: unpack nexus data tar
+  unarchive:
+    src: "{{ playbook_dir }}/files/sonatype-work.tar.gz"
+    dest: "{{nexus_installation_dir}}"
+    creates: "{{nexus_installation_dir}}/sonatype-work"
+    owner: nexus
+    group: nexus
+    directory_mode: 0777
+    mode: 0777
+
 - name: Setup Nexus data directory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
@@ -135,13 +146,6 @@
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^nexus-context-path=.*"
     line: "nexus-context-path={{ nexus_default_context_path }}"
-
-#- name: Bind nexus service to 127.0.0.1 only
-#  lineinfile:
-#    dest: "{{ nexus_default_settings_file }}"
-#    regexp: "^application-host=.*"
-#    line: "application-host=127.0.0.1"
-#  when: httpd_setup_enable
 
 - name: Create systemd service configuration
   template:

@@ -1,9 +1,0 @@
-#!/bin/bash
-#
-set -e
-
-if [ "${OS_VERSION}" == "7.5" ]; then
-  sudo yum -y install python-devel libffi-devel openssl-devel
-fi
-
-sudo pip install -r requirements-ansible.txt

@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+set -e
+
+PYTHON_EXE=$(which python) || PYTHON_EXE=$(which python3)
+#
+$PYTHON_EXE -m pip --version > /dev/null 2>&1 || {
+  # install pip
+  sudo yum install -y python-pip
+  #sudo -H $PYTHON_EXE -m pip install --upgrade pip
+  sudo -H $PYTHON_EXE -m pip install wheel
+
+if [ "${OS_VERSION}" == "7.5" ]; then
+  sudo yum -y install python-devel libffi-devel openssl-devel
+fi
+
+sudo $PYTHON_EXE -m pip install -r sh/requirements-ansible.txt
