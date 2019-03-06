@@ -32,7 +32,7 @@
 - name: Stop systemd service
   shell: 'systemctl stop nexus.service'
   when: nexus_systemd_service_file.stat.exists
-
+     
 - name: Update symlink nexus-latest
   file:
     path: "{{ nexus_installation_dir }}/nexus-latest"
@@ -71,26 +71,25 @@
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
 
-- name: Create Nexus data directory
-  file:
-    path: "{{ nexus_data_dir }}"
-    state: "directory"
-    owner: "{{ nexus_os_user }}"
-    group: "{{ nexus_os_group }}"
-
+- block:
+  - name: Clean {{ nexus_installation_dir }}/sonatype-work
+    file:
+      state: absent
+      path: "{{ nexus_installation_dir }}/sonatype-work/"
+ 
 # The extracted directory structure: "{{nexus_installation_dir}}/sonatype-work/nexus3"
-- name: unpack nexus data tar
-  unarchive:
-    src: "{{ playbook_dir }}/files/sonatype-work.tar.gz"
-    dest: "{{nexus_installation_dir}}"
-    creates: "{{nexus_installation_dir}}/sonatype-work"
-    owner: "{{ nexus_os_user }}"
-    group: "{{ nexus_os_group }}"
-    force: yes
-    directory_mode: 0777
-    mode: 0777
-  when: not nexus_systemd_service_file.stat.exists
-  
+  - name: unpack nexus data tar
+    unarchive:
+      src: "{{ playbook_dir }}/files/sonatype-work.tar.gz"
+      dest: "{{nexus_installation_dir}}"
+      owner: "{{ nexus_os_user }}"
+      group: "{{ nexus_os_group }}"
+      force: yes
+      directory_mode: 0777
+      mode: 0777
+      creates: "{{nexus_installation_dir}}/sonatype-work"
+  when: not nexus_systemd_service_file.stat.exists    
+
 - name: Setup Nexus data directory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"

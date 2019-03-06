@@ -3,38 +3,6 @@
   hosts: 127.0.0.1
   connection: local
   roles:
-    - { role: java}
     - { role: nexus3}
-    - { role: bootstrap-centos}
-    - { role: ulimit}
-    - { role: docker}
-    - { role: registry}
-    - { role: kubespray}
 
-- name: Local haproxy setup - settings file
-  hosts: 127.0.0.1
-  connection: local
-  tasks:
-    # HAProxy cannot bind socket [0.0.0.0:8888]
-    - name: modify the settings on selinux, all available ports became bind-able
-      command: setsebool -P haproxy_connect_any=1
-      become: yes
-    - name: Generating haproxy settings file
-      template:
-        src: files/haproxy-settings.yml.j2
-        dest: /tmp/haproxy-settings.yml
 
-    - name: Dynamically loading haproxy settings
-      include_vars: /tmp/haproxy-settings.yml
-    - include_role:
-        name: haproxy
-
-    - name: Removing the haproxy settings file
-      file: path='/tmp/haproxy-settings.yml' state=absent
-
-- name: setup all nodes
-  hosts: all
-  roles:
-    - { role: bootstrap-centos}
-    - { role: prerequisites}
-    - { role: restart}
