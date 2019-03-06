@@ -1,0 +1,126 @@
+---
+- name: update all packages
+  yum:
+    name: '*'
+    state: latest
+  become: yes
+
+- name: install network tools
+  yum:
+    name: net-tools
+  become: yes
+
+- name: install ntp
+  yum:
+    name: ntp
+  become: yes
+
+- name: check ntpd service is running
+  command: systemctl status ntpd
+  register: result
+  ignore_errors: True
+  become: yes
+    
+- name: configure and sync ntp
+  command: "{{item}}"
+  with_items:
+    - chkconfig ntpd on
+    - ntpdate pool.ntp.org
+  when: result is failed
+  become: yes
+
+- name: start service ntp, if not running
+  service:
+    name: ntpd
+    state: started
+  become: yes
+
+- name: turn off firewall for install
+  command: systemctl disable firewalld
+  become: yes
+
+- name: creates .ssh directory
+  file: path=~/.ssh state=directory owner="{{ user }}" group="{{ group }}" mode=700
+
+- name: copy public key to authorized_keys file
+  blockinfile: 
+    path: "~/.ssh/authorized_keys" 
+    block: |
+      {{lookup('file', "{{ pubkeypath }}")}} 
+    create: yes 
+    state: present
+
+- name: "enable ipv4 forward"
+  lineinfile:
+    path: /etc/sysctl.conf
+    state: present
+    line: 'net.ipv4.ip_forward = 1'
+  become: yes
+
+- name: ansible create directory for bind-mount (directory)
+  file:
+    path: /var/lpv
+    state: directory
+
+- name: ansible create directory for bind-mount (mount point)
+  file:
+   path: /mnt/disks/lpv
+   state: directory
+
+#  - name: Bind mounting /var/lpv into /mnt/disk/lpv
+#    mount:
+#      path: "/mnt/disks/lpv"
+#      src: "/var/lpv"
+#      opts: bind
+#      fstype: none
+#      state: mounted
+##  register: fstab
+
+- name: Bind mounting /var/lpv into /mnt/disks/lpv
+  lineinfile:
+    path: /etc/fstab
+    state: present
+    line: '/var/lpv    /mnt/disks/lpv    none    bind'
+  become: yes
+
+- replace:
+    path: /etc/sudoers
+    regexp: '^#\s*%wheel\s*ALL=\(ALL\)\s*NOPASSWD:\s*ALL$'
+    replace: '%wheel        ALL=(ALL)       NOPASSWD: ALL'
+  become: yes
+
+- replace:
+    path: /etc/sudoers
+    regexp: '^%wheel\s*ALL=\(ALL\)\s*ALL$'
+    replace: '# %wheel  ALL=(ALL)       ALL'
+  become: yes
+
+- replace:
+    path: /etc/fstab
+    regexp: '^/dev/mapper/centos-swap\s*swap\s*swap\s*defaults\s*[0-9]\s*[0-9]$'
+    replace: '# /dev/mapper/centos-swap swap                    swap    defaults        0 0'
+  become: yes
+
+- lineinfile:
+    path: /etc/sysconfig/network
+    state: present
+    line: 'HOSTNAME={{inventory_hostname}}.local'
+  become: yes
+
+- lineinfile:
+    path: /etc/hosts
+    state: present
+    line: '{{ansible_default_ipv4.address}}   {{inventory_hostname}}.local   {{inventory_hostname}}'
+  become: yes
+
+- name: Generate SSH id_rsa key
+  command : ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
+  args:
+    creates: /root/.ssh/id_rsa
+  when: ansible_user_id == "root"
+
+- name: Generate SSH id_rsa key
+  command : ssh-keygen -t rsa -f /home/{{username_on_the_host}}/.ssh/id_rsa -q -P ""
+  args:
+    creates: /home/{{username_on_the_host}}/.ssh/id_rsa
+  when: ansible_user_id != "root"

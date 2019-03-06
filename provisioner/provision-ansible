@@ -1,0 +1,51 @@
+#!/bin/bash
+#
+set -e
+#
+cat /etc/centos-release
+#
+OS_VERSION=$(grep -oE '[0-9]+\.[0-9]+' /etc/redhat-release)
+REPO_DIR="repo"
+WHEEL_PIP_DIR="wheelhouse-pip"
+WHEEL_PIP_TAR_GZ="wheelhouse-pip-${OS_VERSION}.tar.gz"
+PIP_REQUIREMENTS_TXT="requirements-pip.txt"
+WHEEL_ANSIBLE_DIR="wheelhouse-ansible"
+WHEEL_ANSIBLE_TAR_GZ="wheelhouse-ansible-${OS_VERSION}.tar.gz"
+ANSIBLE_REQUIREMENRS_TXT="requirements-ansible.txt"
+PIP_WHEEL="pip-19.0.3-py2.py3-none-any.whl"
+PYTHON_EXE=$(which python) || PYTHON_EXE=$(which python3)
+#
+[ ! -d $REPO_DIR ] || rm -r -f ${REPO_DIR}
+#
+# install PIP if needed
+#
+$PYTHON_EXE -m pip --version > /dev/null 2>&1 || {
+  mkdir -p ${REPO_DIR}
+  tar -xvf $WHEEL_PIP_TAR_GZ --directory ${REPO_DIR}
+  sudo -H $PYTHON_EXE ./${REPO_DIR}/${WHEEL_PIP_DIR}/${PIP_WHEEL}/pip install --upgrade -r ./${REPO_DIR}/${PIP_REQUIREMENTS_TXT} --ignore-installed --no-index --find-links ./${REPO_DIR}/${WHEEL_PIP_DIR}
+  rm -r -f ${REPO_DIR}
+}
+#
+#sudo python -m pip install --upgrade pip
+#
+# install Ansible
+#
+mkdir -p ${REPO_DIR}
+tar -xvf $WHEEL_ANSIBLE_TAR_GZ -C ${REPO_DIR}
+sudo -H $PYTHON_EXE -m pip install -r ./${REPO_DIR}/${ANSIBLE_REQUIREMENRS_TXT} --ignore-installed --no-index --find-links ./${REPO_DIR}/${WHEEL_ANSIBLE_DIR}
+rm -r -f ${REPO_DIR}
+#
+source user.rc
+#
+if [ $USER = "root" ]; then
+ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
+else
+ssh-keygen -t rsa -f /home/${USER}/.ssh/id_rsa -q -P ""
+fi
+#
+if [ "${OS_VERSION}" == "7.5" ]; then
+   sudo yum install -y sshpass
+fi
+#
+#tar -xvf docker-ce.offline.tar -C docker-ce
+#tar   -xvf sonatype-work.tar.gz

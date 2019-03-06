@@ -1,0 +1,81 @@
+---
+# A persistent directory, /nexus-data, is used for configuration, logs, and storage. This directory needs 
+# to be writable by the Nexus process, which runs as UID 200. -- from Nexus document.
+#
+- name: Ensure group "nexus" exists
+  group:
+    name: nexus
+    state: present
+    
+- name: Add the user 'nexus' with a specific uid and a primary group of 'nexus'
+  user:
+    name: nexus
+    comment: John Doe
+    uid: 200
+    group: nexus
+
+- name: create a volume for docker container
+  file: path={{ nexus_data_dir }} state=directory mode=777 owner=nexus group=nexus
+
+# The extracted directory structure: "{{nexus_data_dir}}/sonatype-work/nexus3"
+- name: unpack nexus data tar
+  unarchive:
+    src: "{{ playbook_dir }}/files/sonatype-work.tar.gz"
+    dest: "{{nexus_data_dir}}"
+    creates: "{{nexus_data_dir}}/sonatype-work"
+    owner: nexus
+    group: nexus
+    directory_mode: 0777
+    mode: 0777
+
+- name: nexus image tar
+  copy:
+    src: "{{ playbook_dir }}/files/sonatype-nexus3.tar"
+    dest: "{{ nexus_data_dir }}/sonatype-nexus3.tar"
+    mode: 777
+
+#- name: Load image from archive
+#  docker_image:
+#    name: "sonatype/nexus3:3.15.2"
+#    push: no
+#    load_path: "{{ nexus_data_dir }}/sonatype-nexus3.tar"
+#  become: true
+
+- name: Load image from archive
+  command: "docker load -i {{ nexus_data_dir }}/sonatype-nexus3.tar"
+
+#- name: run container
+#  command: "docker run --name nexus -d --user nexus -p 8081:8081 -v {{nexus_data_dir}}/sonatype-work/nexus3:/nexus-data sonatype/nexus3:3.15.2"
+
+# The better solution is to start containers with a known uid using the--user(you can use a username also, 
+# but remember that it’s just a friendlier way of providing a uid from the host’s username system), and then 
+# limiting access to the uid on the host that you’ve decided the container will run as.
+- name: Start nexus docker container
+  docker_container:
+    name: "nexus3"
+    image: "sonatype/nexus3:3.15.2"
+#   docker_host: "tcp://{{ dds_name }}:2376"
+#   cert_path: "{{ dds_cert_path }}/cert.pem"
+#   cacert_path: "{{ dds_cert_path }}/ca.pem"
+#   key_path: "{{ dds_cert_path }}/key.pem"
+#   tls_verify: yes
+#   tls_hostname: "{{ dds_name }}"
+    restart_policy: always
+#   privileged: true
+    user: nexus
+    ports:
+      - "8081:8081"
+      - "9090:9090"
+    volumes: 
+      - "{{nexus_data_dir}}/sonatype-work/nexus3:/nexus-data"
+  become: true
+
+- name: Check if Nexus is up
+  uri:
+    url: "http://localhost:8081"
+    method: GET
+    status_code: [200]
+  register: result
+  until: result.status == 200
+  retries: 20
+  delay: 30

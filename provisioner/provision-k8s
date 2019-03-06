@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+set -e
+#
+source user.rc
+#
+pushd ../kubespray/
+ansible-playbook -i ../inventory/${INVENTORY_DIVISION_DIR}/hosts.ini -u $USER --become -e @../provisioner/kubespray-vars-overriding.yml cluster.yml
+popd

@@ -1,0 +1,22 @@
+---
+haproxy_frontend:
+  - name: kubernetes-maste
+    bind:
+      - listen: "0.0.0.0:6443"
+    mode: tcp
+    option:
+      - tcplog
+    default_backend: kube-apiserver-backend
+haproxy_backend:
+  - name: kube-apiserver-backend
+    mode: tcp
+    option:
+      - ssl-hello-chk
+    balance: roundrobin
+    server:
+{% for item in groups['kube-master'] %}
+      - name: {{ item }}
+        listen: {{ hostvars[item]['ansible_host'] }}:6443
+        param:
+          - check
+{% endfor %}

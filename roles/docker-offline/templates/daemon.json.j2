@@ -1,0 +1,12 @@
+{
+   "registry-mirrors": [
+  {% if docker_registry_mirrors is defined -%}
+  {% for item in docker_registry_mirrors %}"{{ item }}"{% if not loop.last %},{% endif -%}
+  {% endfor %}
+  {% endif %}]{% if docker_insecure_registries is defined %},
+  "insecure-registries": [
+  {% for item in docker_insecure_registries %}"{{ item }}"{% if not loop.last %},{% endif -%}
+  {%endfor %}
+  ]
+  {% endif %}
+}

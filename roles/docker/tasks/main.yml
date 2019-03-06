@@ -1,0 +1,61 @@
+---
+- name: ansible create /etc/docker directory
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Configure docker
+  template:
+    src: "daemon.json.j2"
+    dest: "/etc/docker/daemon.json"
+
+- debug:
+    msg: "current user: {{ansible_user_id}}"
+
+#- name: Ensure docker users are added to the docker group.
+#  user:
+#    name: "{{ item }}"
+#    groups: docker
+#  with_items:
+#     - "{{ansible_user_id}}"
+  
+- name: Check if docker is installed
+  command: "rpm -q docker-ce"
+  register: docker_check
+  ignore_errors: yes
+
+- name: Display docker query result
+  debug: msg="{{ docker_check }}"
+  ignore_errors: yes
+
+- name: Define Variable docker_not_installed
+  set_fact:
+      docker_not_installed: docker_check.stdout.find('is not installed') != -1
+
+- name: Install required pkgs
+  yum:
+    name:
+     - yum-utils
+     - device-mapper-persistent-data
+     - lvm2
+    state: latest
+
+- name: Add Docker repo
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docer-ce.repo
+
+- name: Install Docker
+  yum:
+    name: docker-ce
+    state: latest
+  notify: restart docker
+
+- name: Ensure Docker is started and enabled at boot.
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Ensure handlers are notified now to avoid firewall conflicts.
+  meta: flush_handlers

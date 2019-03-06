@@ -1,0 +1,33 @@
+---
+# file: oracle-java/tasks/installation/redhat/main.yml
+#
+# Task file to install Oracle Java Development Kit in a system with a Redhat based Linux distribution.
+#
+- name: install RPM
+  yum:
+    name="{{ playbook_dir }}/files//{{ oracle_java_rpm_filename }}"
+    state=present
+  become: yes
+
+- name: set Java version as default
+  alternatives:
+    name="{{ java.exe }}"
+    link="/usr/bin/{{ java.exe }}"
+    path="{{ java.path }}/{{ java.exe }}"
+  with_items:
+    - { path: "{{ oracle_java_home }}/bin", exe: 'java' }
+    - { path: "{{ oracle_java_home }}/bin", exe: 'keytool' }
+  loop_control:
+      loop_var: java
+  become: yes
+  when: (
+          oracle_java_set_as_default and
+          oracle_java_task_rpm_download is defined and
+          oracle_java_task_rpm_download is changed
+        ) or (
+          oracle_java_set_as_default and
+          oracle_java_installed is defined and
+          oracle_java_installed and
+          oracle_java_version_installed is defined and
+          oracle_java_version_installed != oracle_java_version_string)
+  register: oracle_java_task_set_default

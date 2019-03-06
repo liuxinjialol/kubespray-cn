@@ -1,0 +1,5 @@
+USER=root
+# default
+INVENTORY_DIVISION_DIR=mycluster
+BECOME_USR=root
+

@@ -1,0 +1,45 @@
+---
+- name: local (admin) node setup
+  hosts: 127.0.0.1
+  connection: local
+  vars:
+    users_with_items:
+      - name: "alice"
+        personal_directories:
+          - "bob"
+          - "carol"
+          - "dan"
+      - name: "bob"
+        personal_directories:
+          - "alice"
+          - "carol"
+          - "dan"
+
+    common_directories:
+      - "AAAA"
+      - "BBBB"
+      - "CCCC"
+      - "DDDDD"
+
+    users_with_dict:
+      carol:
+        common_directories: "{{ common_directories }}"
+      dan:
+        common_directories: "{{ common_directories }}"
+
+  tasks:
+    - name: "Check ansible version !=2.7.0"
+      debug:
+#1      msg: "{{ item.name }} - out"
+#2      msg: "0: {{ item.0.name }} - 1: {{ item.1 }}"
+#3      msg: "0: {{ item.0.name }} - 1: {{ item.1 }}"
+        msg: "{{ item.key }} - {{ item.value }}"
+#1    with_items: "{{ users_with_items }}"
+#2    with_nested:  # nested loops for(i){ for(j) {i, j } }
+#2      - "{{ users_with_items }}"
+#2      - "{{ common_directories }}"
+#3    with_subelements:  # for(i) { for (j->i[personal_directories]) { i is one of users_with_items, j is one of  user i's personal_directories } }
+#3      - "{{ users_with_items }}"
+#3      - personal_directories 
+#     when: "'{{ item.0 }}' != '{{ item.1 }}'"
+      with_dict: "{{ users_with_dict }}"

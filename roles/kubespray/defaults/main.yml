@@ -1,0 +1,29 @@
+# kubespray subdirectory name under inventory/, that is, inventory/avic
+my_cluster: "mycluster"
+# the repository proxy server domain or IP
+repository_proxy_url: "proxy.auslides.com"
+repository_proxy_port: 8081
+repository_proxy_registry_port: 9090
+
+registry_uris:
+  - "k8s.gcr.io"
+  - "gcr.io"
+  - "quay.io"
+  - "docker.io"
+
+file_store_uris:
+  - "https://kubernetes-charts.storage.googleapis.com"
+  - "https://storage.googleapis.com"
+  - "https://github.com"
+
+yum_repo_centos_7_gpg_uris:
+  - "http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-7"
+
+yum_repo_centos_7_uris:
+  - "http://mirror.centos.org/centos"
+
+yum_repo_docker_gpg_uris:
+  - "https://download.docker.com/linux/centos/gpg"
+
+yum_repo_docker_uris:
+  - "https://download.docker.com/linux/centos"

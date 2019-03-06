@@ -1,0 +1,56 @@
+#
+# pass a file containing the variables by passing @filename.yml as the argument to -e:
+#   ansible-playbook greet.yml -e @greetvars.yml
+ingress_nginx_enabled: true
+# Following configuration is required for kubeadm
+ingress_nginx_tolerations:
+  - key: "node-role.kubernetes.io/master"
+    operator: "Equal"
+    value: ""
+    effect: "NoSchedule"
+
+# kubectl
+kubeconfig_localhost: true
+kubectl_localhost: true
+
+# enable helm
+helm_enabled: true
+helm_stable_repo_url: "http://proxy.auslides.com:8081/repository/a-store-group"
+
+# enable network policy
+enable_network_policy: true
+
+# enable persistent volumes
+persistent_volumes_enabled: true
+local_volume_provisioner_enabled: true
+#
+download_run_once:  True
+download_localhost:  True
+#
+my_cluster: "mycluster"
+# the repository proxy server domain or IP - located on the Ansible controller machine
+# TODO:
+#   Where locate the proxy nodes, registry nodes, and the Ansible control node?
+#
+repository_proxy_url: "proxy.auslides.com"
+repository_proxy_ip: "114.116.119.181"
+repository_proxy_port: 8081
+repository_proxy_registry_port: 9090
+repository_proxy_registry_port_external: 5000
+loadbalance_vip: "114.116.119.181"
+kube_apiserver_port: 6443
+#
+apiserver_loadbalancer_domain_name: "cloud.auslides.com"
+loadbalancer_apiserver:
+  address: "{{ loadbalance_vip }}"
+  port: "{{kube_apiserver_port}}"
+#
+docker_insecure_registries:
+    - "{{repository_proxy_url}}:{{repository_proxy_registry_port}}"
+    - "{{repository_proxy_ip}}:{{repository_proxy_registry_port}}"
+    - "{{repository_proxy_url}}:{{repository_proxy_registry_port_external}}"
+    - "{{repository_proxy_ip}}:{{repository_proxy_registry_port_external}}"
+
+docker_registry_mirrors:
+   - "http://{{repository_proxy_url}}:{{repository_proxy_registry_port}}"
+   - "http://{{repository_proxy_url}}:{{repository_proxy_registry_port_external}}"

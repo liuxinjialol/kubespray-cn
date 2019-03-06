@@ -1,0 +1,28 @@
+---
+- name: Creates {{ yum_repos_d_backup_dir }} directory
+  file:
+    path: "{{ yum_repos_d_backup_dir }}/"
+    state: directory
+
+# back up /etc/yum.repos.d
+- name: Copy /etc/yum.repos.d directory
+  copy:
+    src: "/etc/yum.repos.d/"
+    dest: "{{ yum_repos_d_backup_dir }}/"
+
+- name: Remove files in /etc/yum.repos.d
+  find:
+    paths: "/etc/yum.repos.d"
+    patterns: "*.repo"
+  register: files_to_delete
+
+- file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+    
+# add nexus.repo
+- name: add nexus.repo
+  template:
+    src: nexus.repo.j2
+    dest: /etc/yum.repos.d/nexus.repo

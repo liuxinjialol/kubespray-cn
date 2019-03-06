@@ -1,0 +1,47 @@
+---
+- name: Check if docker is installed
+  command: "rpm -q docker-ce"
+  register: docker_check
+  ignore_errors: yes
+
+- name: Display docker query result
+  debug: msg="{{ docker_check }}"
+  ignore_errors: yes
+
+- name: Define Variable docker_not_installed
+  set_fact:
+      docker_not_installed: docker_check.stdout.find('is not installed') != -1
+
+- name: Install Docker
+  block:
+    - file:
+        path: /tmp/docker-tmp
+        state: directory
+    - unarchive:
+        src: "{{ playbook_dir }}/files/docker-ce.offline-{{ansible_distribution_version[0:3]}}.tar"
+        dest: /tmp/docker-tmp
+    - name: install docker 
+      command: "rpm -ivh --replacefiles --replacepkgs /tmp/docker-tmp/*.rpm"
+      notify: restart docker
+    - name: Ensure Docker is started and enabled at boot.
+      service:
+        name: docker
+        state: started
+        enabled: true
+    - name: "remove the temporary directory"
+      file: path=/tmp/docker-tmp state=absent
+  when: docker_not_installed
+  become: true
+
+- name: ansible create /etc/docker directory
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Configure docker
+  template:
+    src: "daemon.json.j2"
+    dest: "/etc/docker/daemon.json"
+
+- name: Ensure handlers are notified now to avoid firewall conflicts.
+  meta: flush_handlers

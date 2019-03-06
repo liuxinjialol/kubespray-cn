@@ -1,0 +1,2 @@
+---
+yum_repos_d_backup_dir: "/opt/yum_repos_d_backup"

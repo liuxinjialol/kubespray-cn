@@ -1,0 +1,41 @@
+#!/bin/bash
+#
+set -e
+OS_VERSION=$(grep -oE '[0-9]+\.[0-9]+' /etc/redhat-release)
+WHEEL_PIP_DIR="wheelhouse-pip"
+WHEEL_PIP_TAR_GZ="wheelhouse-pip-${OS_VERSION}.tar.gz"
+WHEEL_ANSIBLE_DIR="wheelhouse-ansible"
+WHEEL_ANSIBLE_TAR_GZ="wheelhouse-ansible-${OS_VERSION}.tar.gz"
+PYTHON_EXE=$(which python) || PYTHON_EXE=$(which python3)
+#
+$PYTHON_EXE -m pip --version > /dev/null 2>&1 || {
+  # install pip
+  sudo yum install -y python-pip
+  #sudo -H $PYTHON_EXE -m pip install --upgrade pip
+  sudo -H $PYTHON_EXE -m pip install wheel
+}
+
+# create pip installation packagewheelhouse-pip
+[ ! -f ${WHEEL_PIP_TAR_GZ} ] || rm ${WHEEL_PIP_TAR_GZ}
+[ ! -d ${WHEEL_PIP_DIR} ] || rm -r -f ${WHEEL_PIP_DIR}
+sudo -H $PYTHON_EXE -m pip wheel --wheel-dir=${WHEEL_PIP_DIR} -r requirements-pip.txt
+sudo tar -czvf ${WHEEL_PIP_TAR_GZ} ${WHEEL_PIP_DIR}/ requirements-pip.txt
+sudo mv ${WHEEL_PIP_TAR_GZ} ../
+rm -r -f ${WHEEL_PIP_DIR}
+
+# create ansible installation package
+if [ "${OS_VERSION}" == "7.5" ]; then
+  sudo yum -y install python-devel libffi-devel openssl-devel
+fi
+[ ! -f ${WHEEL_ANSIBLE_TAR_GZ} ] || rm ${WHEEL_ANSIBLE_TAR_GZ}
+[ ! -d ${WHEEL_ANSIBLE_DIR} ] || rm -r -f ${WHEEL_ANSIBLE_DIR}
+sudo -H $PYTHON_EXE -m pip wheel --wheel-dir=${WHEEL_ANSIBLE_DIR} -r requirements-ansible.txt
+sudo tar -czvf ${WHEEL_ANSIBLE_TAR_GZ} ${WHEEL_ANSIBLE_DIR}/ requirements-ansible.txt
+sudo mv ${WHEEL_ANSIBLE_TAR_GZ} ../
+rm -r -f ${WHEEL_ANSIBLE_DIR}
+
+# CentOS 7.5
+if [ "${OS_VERSION}" == "7.5" ]; then
+  sudo yumdownloader -q --nogpgcheck --resolve  --downloadonly sshpass
+  subo mv sshpass*.rpm ../
+fi

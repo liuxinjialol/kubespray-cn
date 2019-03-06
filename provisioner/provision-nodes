@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+set -e
+#
+source user.rc
+#
+echo -n sudo password: 
+read -s password
+
+echo
+
+# Run Ansible Playbook to meet prerequisites
+pushd ../
+#sudo yum clean all
+ansible-playbook -i inventory/${INVENTORY_DIVISION_DIR}/hosts.ini -u $USER --become -k playbook.yml --extra-vars "ansible_sudo_pass=$password user=$USER group=$USER pubkeypath=~/.ssh/id_rsa.pub" -e @provisioner/kubespray-vars-overriding.yml
+
+popd

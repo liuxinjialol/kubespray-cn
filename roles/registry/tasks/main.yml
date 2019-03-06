@@ -1,0 +1,32 @@
+---
+- name: set up a /var/lib/registry directory to make volume for images
+  file: path=/var/lib/registry state=directory mode=755
+
+- name: create /mnt/registry for bind-mount (mount point)
+  file:
+   path: /mnt/registry
+   state: directory
+
+- name: Bind mounting /var/lpv into /mnt/disks/lpv
+  lineinfile:
+    path: /etc/fstab
+    state: present
+    line: '/var/lib/registry    /mnt/registry    none    bind'
+  become: yes
+
+- name: mount all for late use
+  command: mount -a
+  become: true
+    
+- name: Start registry container
+  docker_container:
+    name: "registry"
+    image: "registry:2"
+    restart_policy: always
+    ports:
+      - "5000:5000"
+    volumes: 
+      - "/mnt/registry:/var/lib/registry"
+
+#- name: Start registry container
+#  command: "docker run --name registry-v2 -d -p 5000:5000 -v /mnt/registry:/var/lib/registry registry:2"
