@@ -9,18 +9,21 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 [nexus-centos-extras]
 name=CentOS-$releasever - Extras
 baseurl=http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-centos/$releasever/extras/$basearch/
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 [nexus-centos-updates]
 name=CentOS-$releasever - Updates
 baseurl=http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-centos/$releasever/updates/$basearch/
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 [nexus-fedora-epel]
 name=Extra Packages for Enterprise Linux 7 - $basearch
 baseurl=http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-fedora-epel/7/$basearch
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
