@@ -5,7 +5,7 @@
   roles:
     - { role: java}
     - { role: nexus3}
-    - { role: centos}
+    - { role: bootstrap-centos}
     - { role: ulimit}
     - { role: docker}
     - { role: registry}
@@ -35,6 +35,6 @@
 - name: setup all nodes
   hosts: all
   roles:
-    - { role: centos}
+    - { role: bootstrap-centos}
     - { role: prerequisites}
     - { role: restart}
