@@ -16,6 +16,11 @@
     path: "{{ nexus_installation_dir }}"
     state: "directory"
 
+- name: Check if SystemD service is installed
+  stat:
+    path: /etc/systemd/system/nexus.service
+  register: nexus_systemd_service_file
+
 - name: Unpack Nexus download
   unarchive:
     src: "{{ playbook_dir }}/files/{{ nexus_package }}"
@@ -23,11 +28,6 @@
     creates: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
     force: no
     copy: false
-
-- name: Check if SystemD service is installed
-  stat:
-    path: /etc/systemd/system/nexus.service
-  register: nexus_systemd_service_file
 
 - name: Stop systemd service
   shell: 'systemctl stop nexus.service'
@@ -84,11 +84,13 @@
     src: "{{ playbook_dir }}/files/sonatype-work.tar.gz"
     dest: "{{nexus_installation_dir}}"
     creates: "{{nexus_installation_dir}}/sonatype-work"
-    owner: nexus
-    group: nexus
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    force: yes
     directory_mode: 0777
     mode: 0777
-
+  when: not nexus_systemd_service_file.stat.exists
+  
 - name: Setup Nexus data directory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
