@@ -1,0 +1,3 @@
+---
+container_registry_host: localhost
+container_registry_port: 8787

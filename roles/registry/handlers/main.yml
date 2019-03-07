@@ -1,0 +1,32 @@
+---
+- name: restart docker-distribution
+  command: /bin/true
+  notify:
+    - Docker-distribution | reload systemd
+    - Docker-distribution | reload docker-distribution
+    - Docker-distribution | wait for registry
+  listen: "restart docker-distribution service"
+
+- name: Docker-distribution | reload systemd
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: ansible_service_mgr == 'systemd'
+
+- name: Docker-distribution | reload docker-distribution
+  service:
+    name: docker-distribution
+    state: restarted
+  become: true
+
+# NOTE(bogdando): import caveats https://github.com/ansible/ansible/issues/42621
+- name: Docker-distribution | wait for registry
+  uri:
+    # Just checking API version should be fine
+    # https://docs.docker.com/registry/spec/api/#api-version-check
+    url: "http://{{ container_registry_host }}:{{ container_registry_port }}/v2/"
+    return_content: yes
+  register: registry_status
+  retries: 10
+  delay: 5
+  until: "registry_status.status|int == 200 and 'OK' in registry_status.msg"
