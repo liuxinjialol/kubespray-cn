@@ -16,6 +16,11 @@
     path: "{{ nexus_installation_dir }}"
     state: "directory"
 
+- name: Check if SystemD service is installed
+  stat:
+    path: /etc/systemd/system/nexus.service
+  register: nexus_systemd_service_file
+
 - name: Unpack Nexus download
   unarchive:
     src: "{{ playbook_dir }}/files/{{ nexus_package }}"
@@ -24,15 +29,10 @@
     force: no
     copy: false
 
-- name: Check if SystemD service is installed
-  stat:
-    path: /etc/systemd/system/nexus.service
-  register: nexus_systemd_service_file
-
 - name: Stop systemd service
   shell: 'systemctl stop nexus.service'
   when: nexus_systemd_service_file.stat.exists
-
+     
 - name: Update symlink nexus-latest
   file:
     path: "{{ nexus_installation_dir }}/nexus-latest"
@@ -71,12 +71,24 @@
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
 
-- name: Create Nexus data directory
-  file:
-    path: "{{ nexus_data_dir }}"
-    state: "directory"
-    owner: "{{ nexus_os_user }}"
-    group: "{{ nexus_os_group }}"
+- block:
+  - name: Clean {{ nexus_installation_dir }}/sonatype-work
+    file:
+      state: absent
+      path: "{{ nexus_installation_dir }}/sonatype-work/"
+ 
+# The extracted directory structure: "{{nexus_installation_dir}}/sonatype-work/nexus3"
+  - name: unpack nexus data tar
+    unarchive:
+      src: "{{ playbook_dir }}/files/sonatype-work.tar.gz"
+      dest: "{{nexus_installation_dir}}"
+      owner: "{{ nexus_os_user }}"
+      group: "{{ nexus_os_group }}"
+      force: yes
+      directory_mode: 0777
+      mode: 0777
+      creates: "{{nexus_installation_dir}}/sonatype-work"
+  when: not nexus_systemd_service_file.stat.exists    
 
 - name: Setup Nexus data directory
   lineinfile:
@@ -135,13 +147,6 @@
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^nexus-context-path=.*"
     line: "nexus-context-path={{ nexus_default_context_path }}"
-
-#- name: Bind nexus service to 127.0.0.1 only
-#  lineinfile:
-#    dest: "{{ nexus_default_settings_file }}"
-#    regexp: "^application-host=.*"
-#    line: "application-host=127.0.0.1"
-#  when: httpd_setup_enable
 
 - name: Create systemd service configuration
   template:

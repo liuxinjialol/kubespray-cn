@@ -2,6 +2,7 @@
 [nexus-centos-repo]
 name=Nexus Repository
 baseurl=http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-centos/$releasever/os/$basearch/
+priority=1
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
@@ -9,6 +10,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 [nexus-centos-extras]
 name=CentOS-$releasever - Extras
 baseurl=http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-centos/$releasever/extras/$basearch/
+priority=1
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
@@ -16,6 +18,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 [nexus-centos-updates]
 name=CentOS-$releasever - Updates
 baseurl=http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-centos/$releasever/updates/$basearch/
+priority=1
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
@@ -23,6 +26,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 [nexus-fedora-epel]
 name=Extra Packages for Enterprise Linux 7 - $basearch
 baseurl=http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-fedora-epel/7/$basearch
+priority=1
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
@@ -30,6 +34,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 [nexus-docker-ce-stable]
 name=Docker CE Stable - $basearch
 baseurl=http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-download-docker/7/$basearch/stable
+priority=1
 enabled=1
 gpgcheck=1
 gpgkey=http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-store-docker-gpg/gpg

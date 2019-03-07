@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define :admin, primary: true do |node_config|
     node_config.vm.network "forwarded_port", guest: 8081, host: 8081
-    setup_box_config(node_config, "admin", "#{centos}", "#{net_ip}.10","3072")
+    setup_box_config(node_config, "admin", "#{centos}", "#{net_ip}.10","#{memory}")
   end
   config.vm.define :k8s0 do |node_config|
     node_config.vm.network "forwarded_port", guest: 6443, host: 6443
@@ -37,7 +37,7 @@ def setup_box_config(config, hostname, os, ip, memory)
     config.vm.synced_folder ".", "/vagrant", type: "sshfs"
 
     config.vm.box = os
-    config.vm.box_version = "1901.01"
+    config.vm.box_version = "1809.01"
     config.vm.host_name = hostname
     config.vm.network :private_network, ip: ip
     
