@@ -1,21 +1,21 @@
 ---
 # add nexus.repo
-- name: add nexus.repo
-  template:
-    src: nexus.repo.j2
-    dest: /etc/yum.repos.d/nexus.repo
+#- name: add nexus.repo
+#  template:
+#    src: nexus.repo.j2
+#    dest: /etc/yum.repos.d/nexus.repo
 
-- lineinfile:
-    dest: "/etc/yum.conf"
-    line: "{{ item }}"
-    insertafter: '^\[main\]'
-    state: present
-  with_items:
-    - "retries=5"
-    - "timeout=900"
+#- lineinfile:
+#    dest: "/etc/yum.conf"
+#    line: "{{ item }}"
+#    insertafter: '^\[main\]'
+#    state: present
+#  with_items:
+#    - "retries=5"
+#    - "timeout=900"
 
-- command: yum clean all
-- command: yum makecache
+#- command: yum clean all
+#- command: yum makecache
 
 # fastestmirror plugin actually slows down Ansible deployments
 - name: Check presence of fastestmirror.conf
