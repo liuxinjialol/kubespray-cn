@@ -1,5 +1,10 @@
 ---
 # fastestmirror plugin actually slows down Ansible deployments
+- name: Check presence of fastestmirror.conf
+  stat:
+    path: /etc/yum/pluginconf.d/fastestmirror.conf
+  register: fastestmirror
+
 - name: Disable fastestmirror plugin
   lineinfile:
     dest: /etc/yum/pluginconf.d/fastestmirror.conf
@@ -12,11 +17,6 @@
   yum:
     name: yum-plugin-priorities
     state: present
-
-- name: Check presence of fastestmirror.conf
-  stat:
-    path: /etc/yum/pluginconf.d/fastestmirror.conf
-  register: fastestmirror
 
 - name: Enable yum priorities.
   lineinfile:
