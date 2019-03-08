@@ -22,7 +22,7 @@
       ignore_errors: yes
     - name: Generating haproxy settings file
       template:
-        src: files/haproxy-settings.yml.j2
+        src: haproxy-settings.yml.j2
         dest: /tmp/haproxy-settings.yml
 
     - name: Dynamically loading haproxy settings
