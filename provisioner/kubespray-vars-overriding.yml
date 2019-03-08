@@ -36,15 +36,15 @@ my_cluster: "mycluster"
 # TODO:
 #   Where locate the proxy nodes, registry nodes, and the Ansible control node?
 #
-repository_proxy_url: "192.168.100.10"
-repository_proxy_ip: "192.168.100.10"
+repository_proxy_url: "proxy.auslides.com"
+repository_proxy_ip: "1114.116.119.181"
 repository_proxy_port: 8081
 repository_proxy_registry_port: 9090
 repository_proxy_registry_port_external: 5000
-loadbalance_vip: "192.168.100.10"
+loadbalance_vip: "114.116.119.181"
 kube_apiserver_port: 6443
 #
-apiserver_loadbalancer_domain_name: "192.168.100.10"
+apiserver_loadbalancer_domain_name: "cloud.auslides.com"
 loadbalancer_apiserver:
   address: "{{ loadbalance_vip }}"
   port: "{{kube_apiserver_port}}"
