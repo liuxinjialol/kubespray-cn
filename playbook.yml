@@ -19,6 +19,7 @@
     - name: modify the settings on selinux, all available ports became bind-able
       command: setsebool -P haproxy_connect_any=1
       become: yes
+      ignore_errors: yes
     - name: Generating haproxy settings file
       template:
         src: files/haproxy-settings.yml.j2
