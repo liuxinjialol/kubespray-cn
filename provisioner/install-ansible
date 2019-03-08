@@ -12,8 +12,8 @@ $PYTHON_EXE -m pip --version > /dev/null 2>&1 || {
   sudo -H $PYTHON_EXE -m pip install wheel
 }
 
-if [ "${OS_VERSION}" == "7.5" ]; then
-  sudo yum -y install python-devel libffi-devel openssl-devel
-fi
+#if [ "${OS_VERSION}" == "7.5" ]; then
+  sudo yum -y install python-devel libffi-devel openssl-devel sshpass
+#fi
 
 sudo $PYTHON_EXE -m pip install -r sh/requirements-ansible.txt
