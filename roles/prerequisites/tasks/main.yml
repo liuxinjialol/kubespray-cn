@@ -1,9 +1,10 @@
 ---
-- name: update all packages
-  yum:
-    name: '*'
-    state: latest
-  become: yes
+# TODO: do we need to refresh/update caches
+#- name: update all packages
+#  yum:
+#    name: '*'
+#    state: latest
+#  become: yes
 
 - name: install network tools
   yum:
