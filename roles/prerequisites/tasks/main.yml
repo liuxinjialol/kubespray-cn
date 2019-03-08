@@ -121,14 +121,3 @@
     line: '{{ansible_default_ipv4.address}}   {{inventory_hostname}}.local   {{inventory_hostname}}'
   become: yes
 
-- name: Generate SSH id_rsa key
-  command : ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
-  args:
-    creates: /root/.ssh/id_rsa
-  when: ansible_user_id == "root"
-
-- name: Generate SSH id_rsa key
-  command : ssh-keygen -t rsa -f /home/{{username_on_the_host}}/.ssh/id_rsa -q -P ""
-  args:
-    creates: /home/{{username_on_the_host}}/.ssh/id_rsa
-  when: ansible_user_id != "root"
