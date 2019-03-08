@@ -1,5 +1,4 @@
 ---
-# TODO: do we need to refresh/update caches
 #- name: update all packages
 #  yum:
 #    name: '*'
