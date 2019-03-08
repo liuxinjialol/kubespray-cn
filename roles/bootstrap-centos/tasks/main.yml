@@ -6,6 +6,8 @@
     src: nexus.repo.j2
     dest: /etc/yum.repos.d/nexus.repo
 
+- command: yum clean all
+
 - lineinfile:
     dest: "/etc/yum.conf"
     line: "{{ item }}"
