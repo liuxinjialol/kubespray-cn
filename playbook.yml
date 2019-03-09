@@ -21,9 +21,6 @@
   roles:
     - { role: java}
     - { role: nexus3}
-    - { role: bootstrap-centos}
-    - { role: ulimit}
-    - { role: docker}
     - { role: registry}
     - { role: kubespray}
 
@@ -49,9 +46,4 @@
     - name: Removing the haproxy settings file
       file: path='/tmp/haproxy-settings.yml' state=absent
 
-- name: setup all nodes
-  hosts: all
-  roles:
-    - { role: bootstrap-centos}
-    - { role: prerequisites}
-    - { role: restart}
+- include: prerequisites-playbook.yml
