@@ -16,7 +16,8 @@ haproxy_backend:
     server:
 {% for item in groups['kube-master'] %}
       - name: {{ item }}
-        listen: {{ hostvars[item]['ansible_default_ipv4']['address'] }}:6443
+#       listen: {{ hostvars[item]['ansible_default_ipv4']['address'] }}:6443
+        listen: {{ hostvars[item]['ansible_host'] }}:6443
         param:
           - check
 {% endfor %}
