@@ -18,7 +18,7 @@ helm_enabled: true
 helm_stable_repo_url: "http://proxy.auslides.com:8081/repository/a-store-group"
 
 # enable network policy
-enable_network_policy: true
+# enable_network_policy: true
 
 # enable persistent volumes
 #persistent_volumes_enabled: true
