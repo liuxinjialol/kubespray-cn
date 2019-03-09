@@ -37,7 +37,7 @@ my_cluster: "mycluster"
 #   Where locate the proxy nodes, registry nodes, and the Ansible control node?
 #
 repository_proxy_url: "proxy.auslides.com"
-repository_proxy_ip: "1114.116.119.181"
+repository_proxy_ip: "114.116.119.181"
 repository_proxy_port: 8081
 repository_proxy_registry_port: 9090
 repository_proxy_registry_port_external: 5000
