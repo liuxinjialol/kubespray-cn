@@ -21,8 +21,8 @@ helm_stable_repo_url: "http://proxy.auslides.com:8081/repository/a-store-group"
 enable_network_policy: true
 
 # enable persistent volumes
-persistent_volumes_enabled: true
-local_volume_provisioner_enabled: true
+#persistent_volumes_enabled: true
+#local_volume_provisioner_enabled: true
 #
 # Each node downloads binaries and container images on its own, which is download_run_once: False. Override the download_run_once: True to download container images only once then push to cluster nodes in batches. The default delegate node for pushing images is the first kube-master.
 # NOTE: We have had a images cache server, so we set it to False.
