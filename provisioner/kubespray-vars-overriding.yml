@@ -45,9 +45,9 @@ loadbalance_vip: "114.116.119.181"
 kube_apiserver_port: 6443
 #
 apiserver_loadbalancer_domain_name: "cloud.auslides.com"
-loadbalancer_apiserver:
-  address: "{{ loadbalance_vip }}"
-  port: "{{kube_apiserver_port}}"
+#loadbalancer_apiserver:
+#  address: "{{ loadbalance_vip }}"
+#  port: "{{kube_apiserver_port}}"
 #
 docker_insecure_registries:
     - "{{repository_proxy_url}}:{{repository_proxy_registry_port}}"
