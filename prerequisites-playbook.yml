@@ -84,7 +84,7 @@
 #    lineinfile:
 #      path: /etc/fstab
 #      state: present
-3      line: '/var/lpv    /mnt/disks/lpv    none    bind'
+#      line: '/var/lpv    /mnt/disks/lpv    none    bind'
 #    become: yes
 
   - replace:
