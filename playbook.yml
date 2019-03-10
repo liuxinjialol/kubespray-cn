@@ -46,4 +46,8 @@
     - name: Removing the haproxy settings file
       file: path='/tmp/haproxy-settings.yml' state=absent
 
-- include: prerequisites-playbook.yml
+- name: setup node
+  hosts: all
+  roles:
+    - { role: prerequisites}
+    - { role: restart}
