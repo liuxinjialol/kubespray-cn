@@ -21,8 +21,8 @@ helm_stable_repo_url: "http://proxy.auslides.com:8081/repository/a-store-group"
 enable_network_policy: true
 
 # enable persistent volumes
-persistent_volumes_enabled: true
-local_volume_provisioner_enabled: true
+#persistent_volumes_enabled: true
+#local_volume_provisioner_enabled: true
 #
 # Each node downloads binaries and container images on its own, which is download_run_once: False. Override the download_run_once: True to download container images only once then push to cluster nodes in batches. The default delegate node for pushing images is the first kube-master.
 # NOTE: We have had a images cache server, so we set it to False.
@@ -36,7 +36,7 @@ my_cluster: "mycluster"
 # TODO:
 #   Where locate the proxy nodes, registry nodes, and the Ansible control node?
 #
-repository_proxy_url: "192.168.100.10"
+repository_proxy_url: "proxy.auslides.com"
 repository_proxy_ip: "192.168.100.10"
 repository_proxy_port: 8081
 repository_proxy_registry_port: 9090
@@ -45,10 +45,13 @@ loadbalance_vip: "192.168.100.10"
 kube_apiserver_port: 6443
 #
 apiserver_loadbalancer_domain_name: "192.168.100.10"
+supplementary_addresses_in_ssl_keys: ["{{ loadbalance_vip }}"]
+#the loadbalancer_apiserver considered mutually exclusive to loadbalancer_apiserver_localhost.
+loadbalancer_apiserver_localhost: False
 loadbalancer_apiserver:
   address: "{{ loadbalance_vip }}"
   port: "{{kube_apiserver_port}}"
-#
+
 docker_insecure_registries:
     - "{{repository_proxy_url}}:{{repository_proxy_registry_port}}"
     - "{{repository_proxy_ip}}:{{repository_proxy_registry_port}}"

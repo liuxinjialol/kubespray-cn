@@ -1,22 +1,28 @@
 ---
-- name: install the yum-plugin-priorities package
-  yum:
-    name: yum-plugin-priorities
-    state: present
+# add nexus.repo
+#- name: add nexus.repo
+#  template:
+#    src: nexus.repo.j2
+#    dest: /etc/yum.repos.d/nexus.repo
 
+#- lineinfile:
+#    dest: "/etc/yum.conf"
+#    line: "{{ item }}"
+#    insertafter: '^\[main\]'
+#    state: present
+#  with_items:
+#    - "retries=5"
+#    - "timeout=900"
+
+#- command: yum clean all
+#- command: yum makecache
+
+# fastestmirror plugin actually slows down Ansible deployments
 - name: Check presence of fastestmirror.conf
   stat:
     path: /etc/yum/pluginconf.d/fastestmirror.conf
   register: fastestmirror
 
-- name: Enable yum priorities.
-  lineinfile:
-    dest: /etc/yum/pluginconf.d/priorities.conf
-    regexp: "^enabled=.*"
-    line: "enabled=0"
-    state: present
-
-# fastestmirror plugin actually slows down Ansible deployments
 - name: Disable fastestmirror plugin
   lineinfile:
     dest: /etc/yum/pluginconf.d/fastestmirror.conf
@@ -25,17 +31,21 @@
     state: present
   when: fastestmirror.stat.exists
 
-# add nexus.repo
-- name: add nexus.repo
-  template:
-    src: nexus.repo.j2
-    dest: /etc/yum.repos.d/nexus.repo
+# TODO: do we need to refresh/update caches
+- name: update all packages
+  yum:
+    name: '*'
+    state: latest
+  become: yes
 
-- lineinfile:
-    dest: "/etc/yum.conf"
-    line: "{{ item }}"
-    insertafter: '^\[main\]'
+- name: install the yum-plugin-priorities package
+  yum:
+    name: yum-plugin-priorities
     state: present
-  with_items:
-    - "retries=5"
-    - "timeout=900"
+
+- name: Enable yum priorities.
+  lineinfile:
+    dest: /etc/yum/pluginconf.d/priorities.conf
+    regexp: "^enabled=.*"
+    line: "enabled=0"
+    state: present

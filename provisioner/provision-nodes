@@ -4,6 +4,10 @@ set -e
 #
 source user.rc
 #
+echo Remote User: $USER
+echo become-user: $BECOME_USR
+echo Inventory: ${INVENTORY_DIVISION_DIR}
+#
 echo -n sudo password: 
 read -s password
 
@@ -12,6 +16,6 @@ echo
 # Run Ansible Playbook to meet prerequisites
 pushd ../
 #sudo yum clean all
-ansible-playbook -i inventory/${INVENTORY_DIVISION_DIR}/hosts.ini -u $USER --become -k playbook.yml --extra-vars "ansible_sudo_pass=$password user=$USER group=$USER pubkeypath=~/.ssh/id_rsa.pub" -e @provisioner/kubespray-vars-overriding.yml
+ansible-playbook -i inventory/${INVENTORY_DIVISION_DIR}/hosts.ini -u $USER --become --become-user=$BECOME_USR -k playbook.yml --extra-vars "ansible_sudo_pass=$password user=$USER group=$USER pubkeypath=~/.ssh/id_rsa.pub" -e @provisioner/kubespray-vars-overriding.yml
 
 popd

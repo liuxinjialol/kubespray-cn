@@ -26,26 +26,24 @@
     - "{{ file_lists.files }}"
     - "{{ file_store_uris }}"
 
-# put the long pattern before the short one
-- name: Replace strings in files - yum_repo_centos_7_gpg_uris
-  replace:
-    dest: "{{ item.0.path }}"
-    regexp: "{{ item.1 }}"
-    replace: "http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-store-centos-7-gpg/RPM-GPG-KEY-CentOS-7"
-  with_nested:
-    - "{{ file_lists.files }}"
-    - "{{ yum_repo_centos_7_gpg_uris }}"
+#- name: Replace strings in files - yum_repo_centos_7_gpg_uris
+#  replace:
+#    dest: "{{ item.0.path }}"
+#    regexp: "{{ item.1 }}"
+#    replace: "http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-store-centos-7-gpg/RPM-GPG-KEY-CentOS-7"
+#  with_nested:
+#    - "{{ file_lists.files }}"
+#    - "{{ yum_repo_centos_7_gpg_uris }}"
 
-- name: Replace strings in files - yum_repo_centos_7_uris
-  replace:
-    dest: "{{ item.0.path }}"
-    regexp: "{{ item.1 }}"
-    replace: "http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-group"
-  with_nested:
-    - "{{ file_lists.files }}"
-    - "{{ yum_repo_centos_7_uris }}"
+#- name: Replace strings in files - yum_repo_centos_7_uris
+#  replace:
+#    dest: "{{ item.0.path }}"
+#    regexp: "{{ item.1 }}"
+#    replace: "http://{{ repository_proxy_url }}:{{ repository_proxy_port }}/repository/a-yum-group"
+#  with_nested:
+#    - "{{ file_lists.files }}"
+#    - "{{ yum_repo_centos_7_uris }}"
 
-# put the long pattern before the short one
 - name: Replace strings in files - yum_repo_docker_gpg_uris
   replace:
     dest: "{{ item.0.path }}"
@@ -66,11 +64,3 @@
 
 - name: copy files to my cluster's inventory
   copy: src=kubespray/inventory/sample/group_vars/ dest=inventory/{{ my_cluster }}/group_vars/ remote_src=no
-
-- name: Add the vars for overriding to the end of k8s-cluster.yml
-  blockinfile: 
-    path: "inventory/{{ my_cluster }}/group_vars/k8s-cluster/k8s-cluster.yml" 
-    block: |
-      {{lookup('file', "provisioner/kubespray-vars-overriding.yml")}} 
-    create: yes 
-    state: present
