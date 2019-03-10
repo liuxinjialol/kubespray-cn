@@ -1,0 +1,4 @@
+---
+- name: restart docker-distribution
+  shell: iptables-save
+  listen: "Save iptables"
