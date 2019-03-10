@@ -43,6 +43,16 @@
     command: systemctl disable firewalld
     become: yes
 
+  - name: clean iptables rules, setup default forward policy
+    iptables_raw:
+    name: custom1_rules
+    rules: |
+      -F
+      -X
+      -F -t nat
+      -X -t nat
+      -P FORWARD ACCEPT
+
   - name: creates .ssh directory
     file: path=~/.ssh state=directory owner="{{ user }}" group="{{ group }}" mode=700
 
