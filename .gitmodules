@@ -1,3 +1,6 @@
 [submodule "kubespray"]
 	path = kubespray
 	url = ../../kubernetes-sigs/kubespray
+[submodule "addons/rook"]
+	path = addons/rook
+	url = ../rook
