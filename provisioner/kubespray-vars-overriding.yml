@@ -52,8 +52,8 @@ loadbalancer_apiserver:
   address: "{{ loadbalance_vip }}"
   port: "{{kube_apiserver_port}}"
 
-container_registry_host: ""
-container_registry_port: {{ repository_proxy_registry_port_external }}
+container_registry_host: " "
+container_registry_port: "{{ repository_proxy_registry_port_external }}"
 
 docker_insecure_registries:
     - "{{repository_proxy_url}}:{{repository_proxy_registry_port}}"
