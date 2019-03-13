@@ -8,3 +8,9 @@
       register: output
 
     - debug: var=output.msg
+
+- name: setup storage node
+  hosts: all
+  roles:
+    - { role: prepare-nodes}
+
