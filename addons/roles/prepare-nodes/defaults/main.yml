@@ -1,0 +1,4 @@
+---
+dataDirHostPath: "/var/lib/edgefs"
+storage_directory: "/var/edgefs"
+mount_point: "/mnt/disks/edgefs"

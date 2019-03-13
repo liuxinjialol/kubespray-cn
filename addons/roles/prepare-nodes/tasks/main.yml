@@ -1,30 +1,26 @@
 ---
-vars:
-  dataDirHostPath: "/var/lib/edgefs"
-  storage_directory: "/var/edgefs"
-  mount_point: "/mnt/disks/edgefs"
 # For test scenarios, if you delete a cluster and start a new cluster on
 # the same hosts, the path used by dataDirHostPath must be deleted.
 # Otherwise, stale information and other config will remain from the
 # previous cluster and the new target will fail to start.
 - name: Removing existing dataDirHostPath
     file:
-      path: {{dataDirHostPath}}
+      path: "{{dataDirHostPath}}"
       state: absent
 
 - name: ansible create directory for bind-mount (directory)
    file:
-     path: {{storage_directory}}
+     path: "{{storage_directory}}"
      state: directory
 
 - name: ansible create directory for bind-mount (mount point)
   file:
-    path: {{mount_point}}
+    path: "{{mount_point}}"
     state: directory
 
 - name: Bind mounting /var/lpv into /mnt/disks/lpv
   lineinfile:
     path: /etc/fstab
     state: present
-    line: '{{storage_directory}}   {{mount_point}}    none    bind'
+    line: "{{storage_directory}}   {{mount_point}}    none    bind"
   become: yes
