@@ -3,8 +3,6 @@
   hosts: 127.0.0.1
   connection: local
   tasks:
-    - debug: "hello"
-    
     - name: Kubectl get pods in json format
       kubectl: action=get type=pods output=wide
       register: output
