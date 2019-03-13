@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+set -e
+#
+source ../provisioner/user.rc
+#
+echo Remote User: $USER
+echo become-user: $BECOME_USR
+echo Inventory: ${INVENTORY_DIVISION_DIR}
+#
+ansible-playbook -i ../inventory/${INVENTORY_DIVISION_DIR}/hosts.ini -u $USER --become --become-user=$BECOME_USR -e @../provisioner/kubespray-vars-overriding.yml rook-playbook.yml
