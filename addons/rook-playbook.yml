@@ -4,8 +4,8 @@
   connection: local
   gather_facts: no
   tasks:
-  - name: Kubectl get pods in json format
-    kubectl: action=get type=pods output=wide
-    register: output
+    - name: Kubectl get pods in json format
+      kubectl: action=get type=pods output=wide
+      register: output
 
-  - debug: var=output.msg
+    - debug: var=output.msg
