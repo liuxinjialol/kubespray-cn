@@ -1,8 +1,8 @@
 ---
 #
 # thess tasks will change the following files:
-#   inventory/sample/group_vars/k8s-cluster/k8s-cluster.yml
-#   roles/download/defaults/main.yml
+#   kubespray/inventory/sample/group_vars/k8s-cluster/k8s-cluster.yml
+#   kubespray/roles/download/defaults/main.yml
 #
 - name: Get a list of files
   find:  
