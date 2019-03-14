@@ -24,3 +24,7 @@
     state: present
     line: "{{storage_directory}}   {{mount_point}}    none    bind"
   become: yes
+
+- name: mount all filesystems mentioned in fstab
+  command: mount -a
+  become: yes
