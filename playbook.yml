@@ -22,7 +22,6 @@
   - { role: java}
   - { role: nexus3}
   - { role: registry}
-  - { role: kubespray}
 
 - name: Local haproxy setup - settings file
   hosts: 127.0.0.1
@@ -45,6 +44,12 @@
 
   - name: Removing the haproxy settings file
     file: path='/tmp/haproxy-settings.yml' state=absent
+
+- name: local (admin) node setup - customizing kubespray
+  hosts: 127.0.0.1
+  connection: local
+  roles:
+  - { role: kubespray}
 
 - name: setup node
   hosts: all
