@@ -7,7 +7,7 @@
 - name: copy files to my cluster's inventory
   copy: src=kubespray/inventory/sample/group_vars/ dest=inventory/{{ my_cluster }}/group_vars/ remote_src=no
 
-- name: copy files to my cluster's inventory
+- name: copy files to kubespray-work-dir
   copy: src=kubespray/ dest=kubespray-work-dir/ remote_src=no
 
 - name: Get a list of files
