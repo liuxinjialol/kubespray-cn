@@ -4,11 +4,17 @@
 #   kubespray/inventory/sample/group_vars/k8s-cluster/k8s-cluster.yml
 #   kubespray/roles/download/defaults/main.yml
 #
+- name: copy files to my cluster's inventory
+  copy: src=kubespray/inventory/sample/group_vars/ dest=inventory/{{ my_cluster }}/group_vars/ remote_src=no
+
+- name: copy files to my cluster's inventory
+  copy: src=kubespray/ dest=kubespray-work-dir/ remote_src=no
+
 - name: Get a list of files
   find:  
     paths:
-      - "./kubespray/inventory/sample/group_vars"
-      - "./kubespray/roles"
+      - "./inventory/{{ my_cluster }}/group_vars/"
+      - "./kubespray-work-dir/roles"
     patterns: "*.yml"
     recurse: yes
   register: file_lists
@@ -17,7 +23,7 @@
   replace:
     dest: "{{ item.0.path }}"
     regexp: "{{ item.1 }}"
-    replace: "{{ repository_proxy_url }}:{{ repository_proxy_registry_port }}"
+    replace: "{{ repository_proxy_url }}:{{ repository_proxy_registry_port }}/"
   with_nested:
     - "{{ file_lists.files }}"
     - "{{ registry_uris }}"
@@ -66,6 +72,3 @@
   with_nested:
     - "{{ file_lists.files }}"
     - "{{ yum_repo_docker_uris }}"
-
-- name: copy files to my cluster's inventory
-  copy: src=kubespray/inventory/sample/group_vars/ dest=inventory/{{ my_cluster }}/group_vars/ remote_src=no

@@ -6,10 +6,10 @@ repository_proxy_port: 8081
 repository_proxy_registry_port: 9090
 
 registry_uris:
-  - "k8s.gcr.io"
-  - "gcr.io"
-  - "quay.io"
-  - "docker.io"
+  - "k8s.gcr.io/"
+  - "gcr.io/"
+  - "quay.io/"
+  - "docker.io/"
 
 file_store_uris:
   - "https://kubernetes-charts.storage.googleapis.com"
