@@ -12,7 +12,8 @@ ingress_nginx_tolerations:
 # kubectl
 kubeconfig_localhost: true
 kubectl_localhost: true
-
+# Metrics Server deployment
+metrics_server_enabled: true
 # enable helm
 helm_enabled: true
 helm_stable_repo_url: "http://proxy.auslides.com:8081/repository/a-store-group"
@@ -27,13 +28,6 @@ enable_network_policy: true
 kube_feature_gates:
   - "CSIDriverRegistry=true"
 
-# Each node downloads binaries and container images on its own, which is download_run_once: False. Override the download_run_once: True to download container images only once then push to cluster nodes in batches. The default delegate node for pushing images is the first kube-master.
-# NOTE: We have had a images cache server, so we set it to False.
-download_run_once: False
-# If your ansible runner node (aka the admin node) have password-less sudo and docker enabled, you may want to define the download_localhost: True, which makes that node a delegate for pushing images
-# NOTE: This setting cause the images also uploaded from node1 to localhost (the admin node). It takes much time, so we set to False.
-download_localhost: False
-#
 my_cluster: "mycluster"
 # the repository proxy server domain or IP - located on the Ansible controller machine
 # TODO:
