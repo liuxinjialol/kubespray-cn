@@ -4,14 +4,14 @@
 # Otherwise, stale information and other config will remain from the
 # previous cluster and the new target will fail to start.
 - name: Removing existing dataDirHostPath
-    file:
-      path: "{{dataDirHostPath}}"
-      state: absent
+  file:
+    path: "{{dataDirHostPath}}"
+    state: absent
 
 - name: ansible create directory for bind-mount (directory)
-   file:
-     path: "{{storage_directory}}"
-     state: directory
+  file:
+    path: "{{storage_directory}}"
+    state: directory
 
 - name: ansible create directory for bind-mount (mount point)
   file:
