@@ -24,6 +24,9 @@ enable_network_policy: true
 #persistent_volumes_enabled: true
 #local_volume_provisioner_enabled: true
 #
+kube_feature_gates:
+  - "CSIDriverRegistry=true"
+
 # Each node downloads binaries and container images on its own, which is download_run_once: False. Override the download_run_once: True to download container images only once then push to cluster nodes in batches. The default delegate node for pushing images is the first kube-master.
 # NOTE: We have had a images cache server, so we set it to False.
 download_run_once: False
