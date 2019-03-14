@@ -2,4 +2,4 @@
 - name: setup storage node
   hosts: all
   roles:
-    - { role: prepare-nodes}
+  - { role: prepare-nodes}
