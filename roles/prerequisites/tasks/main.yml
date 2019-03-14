@@ -35,11 +35,11 @@
     state: started
   become: yes
 
-# turn off selinux for mounting -- CentOS 7 default is "SELINUX=permissive"
-- name:
+- name: setenforce 0
   command: setenforce 0
   become: yes
-- name : 
+  ignore_errors: True
+- name : turn off selinux for mounting -- CentOS 7 default is "SELINUX=permissive"
   command: sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
   become: yes
 
