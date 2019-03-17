@@ -24,9 +24,6 @@ enable_network_policy: true
 # enable persistent volumes
 #persistent_volumes_enabled: true
 #local_volume_provisioner_enabled: true
-#
-kube_feature_gates:
-  - "CSIDriverRegistry=true"
 
 my_cluster: "mycluster"
 # the repository proxy server domain or IP - located on the Ansible controller machine
@@ -61,3 +58,13 @@ docker_insecure_registries:
 docker_registry_mirrors:
    - "http://{{repository_proxy_url}}:{{repository_proxy_registry_port}}"
    - "http://{{repository_proxy_url}}:{{repository_proxy_registry_port_external}}"
+#
+kube_feature_gates:
+  - CSIDriverRegistry=true
+  - CSINodeInfo=true
+  - VolumeSnapshotDataSource=true
+#  - KubeletPluginsWatcher=true
+#  - BlockVolume=true
+#  - CSIBlockVolume=true
+#
+docker_mount_flags: shared
