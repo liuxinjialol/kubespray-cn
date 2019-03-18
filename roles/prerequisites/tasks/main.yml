@@ -35,6 +35,7 @@
     state: started
   become: yes
 
+# -- TODO --
 - name: Disable SELinux 
   command: setenforce 0
   become: yes
@@ -58,6 +59,8 @@
 #  notify:
 #   - Save iptables
 #  become: yes
+
+# -- TODO end--
 
 - name: creates .ssh directory
   file: path=~/.ssh state=directory owner="{{ user }}" group="{{ group }}" mode=700
