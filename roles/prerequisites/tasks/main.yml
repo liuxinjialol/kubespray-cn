@@ -35,11 +35,11 @@
     state: started
   become: yes
 
-- name: setenforce 0
+- name: Disable SELinux 
   command: setenforce 0
   become: yes
   ignore_errors: True
-- name : turn off selinux for mounting -- CentOS 7 default is "SELINUX=permissive"
+- name : Turn off selinux for mounting -- CentOS 7 default is "SELINUX=permissive"
   command: sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
   become: yes
 
@@ -53,11 +53,11 @@
    - Save iptables
   become: yes
      
-- name: setup default forward policy
-  shell: iptables -P FORWARD ACCEPT
-  notify:
-   - Save iptables
-  become: yes
+#- name: setup default forward policy
+#  shell: iptables -P FORWARD ACCEPT
+#  notify:
+#   - Save iptables
+#  become: yes
 
 - name: creates .ssh directory
   file: path=~/.ssh state=directory owner="{{ user }}" group="{{ group }}" mode=700
