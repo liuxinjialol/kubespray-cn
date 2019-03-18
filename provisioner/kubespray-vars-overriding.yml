@@ -63,8 +63,5 @@ kube_feature_gates:
   - CSIDriverRegistry=true
   - CSINodeInfo=true
   - VolumeSnapshotDataSource=true
-#  - KubeletPluginsWatcher=true
-#  - BlockVolume=true
-#  - CSIBlockVolume=true
 #
 docker_mount_flags: shared
