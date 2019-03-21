@@ -3,6 +3,9 @@
 # the same hosts, the path used by dataDirHostPath must be deleted.
 # Otherwise, stale information and other config will remain from the
 # previous cluster and the new target will fail to start.
+#
+# The path on the host (hostPath) where config and data should be stored for each of the services. If the directory does not exist, it will be created. 
+#
 - name: Removing existing dataDirHostPath
   file:
     path: "{{dataDirHostPath}}"
@@ -27,4 +30,15 @@
 
 - name: mount all filesystems mentioned in fstab
   command: mount -a
+  become: yes
+
+- name: install rpcbind for NFS mount
+  yum:
+    name: rpcbind
+  become: yes
+
+- name: start service rpcbind, if not running
+  service:
+    name: rpcbind
+    state: started
   become: yes
