@@ -35,33 +35,6 @@
     state: started
   become: yes
 
-# -- TODO --
-- name: Disable SELinux 
-  command: setenforce 0
-  become: yes
-  ignore_errors: True
-- name : Turn off selinux for mounting -- CentOS 7 default is "SELINUX=permissive"
-  command: sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
-  become: yes
-
-- name: turn off firewall for install
-  command: systemctl disable firewalld
-  become: yes
-
-- name: clean iptables rules
-  shell: iptables -F && iptables -X && iptables -F -t nat && iptables -X -t nat
-  notify:
-   - Save iptables
-  become: yes
-     
-#- name: setup default forward policy
-#  shell: iptables -P FORWARD ACCEPT
-#  notify:
-#   - Save iptables
-#  become: yes
-
-# -- TODO end--
-
 - name: creates .ssh directory
   file: path=~/.ssh state=directory owner="{{ user }}" group="{{ group }}" mode=700
 
