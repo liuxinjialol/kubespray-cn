@@ -34,9 +34,7 @@
 
 - name: Setting Up NFS
   yum: 
-    name:
-    - nfs-utils
-    - nfs-utils-lib
+    name: nfs-utils
 
 - name: Enable and start NFS services
   systemd:
