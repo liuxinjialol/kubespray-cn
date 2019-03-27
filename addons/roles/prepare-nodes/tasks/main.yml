@@ -32,13 +32,20 @@
   command: mount -a
   become: yes
 
-- name: install rpcbind for NFS mount
-  yum:
-    name: rpcbind
-  become: yes
+- name: Setting Up NFS
+  yum: 
+    name:
+    - nfs-utils
+    - nfs-utils-lib
 
-- name: start service rpcbind, if not running
-  service:
-    name: rpcbind
+- name: Enable and start NFS services:
+  systemd:
+    name: "{{ item }}"
     state: started
-  become: yes
+    enabled: yes
+    daemon_reload: yes
+  with_items:
+    - 'rpcbind'
+    - 'nfs-server'
+    - 'nfs-lock'
+    - 'nfs-idmap'
