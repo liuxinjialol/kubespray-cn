@@ -38,7 +38,7 @@
     - nfs-utils
     - nfs-utils-lib
 
-- name: Enable and start NFS services:
+- name: Enable and start NFS services
   systemd:
     name: "{{ item }}"
     state: started
