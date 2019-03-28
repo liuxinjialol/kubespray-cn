@@ -1,0 +1,14 @@
+---
+- name: setup storage node
+  hosts: all
+  tasks:
+  - name: Setting Up iSCSI client
+    yum: 
+      name: iscsi-initiator-utils
+
+  - name: Enable and start iSCSI.d service
+    systemd:
+      name: iscsid
+      state: started
+      enabled: yes
+      daemon_reload: yes
