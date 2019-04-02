@@ -48,7 +48,7 @@
 - name: Install Docker
   yum:
     name: docker-ce
-    state: latest
+    state: 18.06.2-ce
   notify: restart docker
 
 - name: Ensure Docker is started and enabled at boot.
